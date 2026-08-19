@@ -1,0 +1,52 @@
+# =========================
+# Gradle
+# =========================
+.gradle/
+build/
+**/build/
+
+# Gradle wrapper - NO ignorar:
+# gradlew
+# gradlew.bat
+# gradle/wrapper/
+
+# =========================
+# IntelliJ IDEA
+# =========================
+.idea/
+*.iml
+out/
+
+# =========================
+# Hyperskill generated files
+# =========================
+course-info.yaml
+course-remote-info.yaml
+**/lesson-info.yaml
+**/task-info.yaml
+**/task-remote-info.yaml
+**/task.html
+
+# =========================
+# Sistema operativo
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs / temporales
+# =========================
+*.log
+*.tmp
+*.temp
+
+# =========================
+# Java
+# =========================
+*.class
+
+# =========================
+# Test / reports generados
+# =========================
+**/reports/
+**/test-results/
