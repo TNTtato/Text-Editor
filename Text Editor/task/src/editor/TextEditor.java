@@ -3,6 +3,7 @@ package editor;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
@@ -14,6 +15,9 @@ public class TextEditor extends JFrame {
     private JButton loadButton;
     private JTextField filenameField;
     private JScrollPane scrollPane;
+    private MenuBar menuBar;
+    private ActionListener saveListener = getSaveAction();
+    private ActionListener loadListener = getLoadAction();
 
     public TextEditor() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -38,6 +42,11 @@ public class TextEditor extends JFrame {
         add(right, BorderLayout.EAST);
         add(scrollPane, BorderLayout.CENTER);
         add(bottom, BorderLayout.SOUTH);
+
+        menuBar = new MenuBar();
+        setMenuBarActions();
+        setJMenuBar(menuBar);
+
         setVisible(true);
     }
 
@@ -57,7 +66,19 @@ public class TextEditor extends JFrame {
         Dimension btnDim = new Dimension(100, 20);
         saveButton = new JButton("Save");
         saveButton.setName("SaveButton");
-        saveButton.addActionListener( e -> {
+        saveButton.addActionListener(saveListener);
+        saveButton.setPreferredSize(btnDim);
+        loadButton = new JButton("Load");
+        loadButton.setName("LoadButton");
+        loadButton.setPreferredSize(btnDim);
+        loadButton.addActionListener(loadListener);
+        panel.add(saveButton);
+        panel.add(loadButton);
+        return panel;
+    }
+
+    private ActionListener getSaveAction() {
+        return e -> {
             if (filenameField == null || filenameField.getText().trim().equals("")) {
                 return;
             }
@@ -79,21 +100,20 @@ public class TextEditor extends JFrame {
                 throw new RuntimeException(ex);
             }
 
-        });
-        saveButton.setPreferredSize(btnDim);
-        loadButton = new JButton("Load");
-        loadButton.setName("LoadButton");
-        loadButton.setPreferredSize(btnDim);
-        loadButton.addActionListener( e -> {
-           if (filenameField == null || filenameField.getText().trim().equals("")) {
-               return;
-           }
+        };
+    }
 
-           File file = new File(filenameField.getText().trim());
-           if (!file.exists()) {
-               textArea.setText("");
-               return;
-           }
+    private ActionListener getLoadAction() {
+        return e -> {
+            if (filenameField == null || filenameField.getText().trim().equals("")) {
+                return;
+            }
+
+            File file = new File(filenameField.getText().trim());
+            if (!file.exists()) {
+                textArea.setText("");
+                return;
+            }
 
             try(FileReader fr = new FileReader(file)) {
                 StringBuilder sb = new StringBuilder();
@@ -107,9 +127,15 @@ public class TextEditor extends JFrame {
                 throw new RuntimeException(ex);
             }
 
+        };
+    }
+
+    private void setMenuBarActions() {
+        menuBar.setActionToOption(MenuBar.FILE_MENU_LOAD, loadListener);
+        menuBar.setActionToOption(MenuBar.FILE_MENU_SAVE, saveListener);
+        menuBar.setActionToOption(MenuBar.FILE_MENU_EXIT, e -> {
+            this.dispose();
+            System.exit(0);
         });
-        panel.add(saveButton);
-        panel.add(loadButton);
-        return panel;
     }
 }
